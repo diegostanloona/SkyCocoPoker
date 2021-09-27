@@ -12,6 +12,8 @@ import { useAuth } from './shared/hooks/auth-hook';
 
 import MainGame from './game/pages/MainGame';
 
+const Home = React.lazy(() => import('./home/pages/Home'));
+
 const App = () => {
 
     const {token, login, logout, userId} = useAuth();
@@ -22,7 +24,7 @@ const App = () => {
         routes = (
             <Switch>
               <Route path="/" exact>
-              //home
+                <Home/>
               </Route>
               <Route path="/game" exact>
                 <MainGame/>
