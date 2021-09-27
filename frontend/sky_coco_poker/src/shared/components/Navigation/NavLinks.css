@@ -16,29 +16,29 @@
 
 .nav-links a {
   border: 1px solid transparent;
-  border-radius: 8px;
+  border-radius: 2px;
   color: #292929;
   text-decoration: none;
   padding: 0.5rem;
 }
 
 .nav-links a:hover{
-  background: #CC85C4;
+  background: var(--primary);
   color: #FFFFFF;
 }
 
 
 .nav-links a:active,
 .nav-links a.active {
-  border-color: #CC85C4;
+  border-color: var(--primary);
 }
 
 .nav-links button {
   cursor: pointer;
-  border: 1px solid #CC85C4;
-    border-radius: 8px;
+  border: 1px solid var(--primary);
+    border-radius: 2px;
 
-  color: #CC85C4;
+  color: var(--primary);
   background: transparent;
   padding: 0.5rem;
   font: inherit;
@@ -50,8 +50,8 @@
 
 .nav-links button:hover,
 .nav-links button:active {
-  background: #CC85C4;
-  color: #CC85C4;
+  background: var(--primary);
+  color: var(--primary);
 }
 
 @media (min-width: 768px) {
@@ -64,19 +64,19 @@
   }
 
   .nav-links a {
-    color: #CC85C4;
+    color: var(--primary);
     text-decoration: none;
   }
 
   .nav-links button {
-    border: 1px solid white;
-    color: #CC85C4;
+    border: 1px solid var(--secundary);
+    color: var(--primary);
     background: transparent;
   }
-  
+
   .nav-links button:hover,
   .nav-links button:active {
-    background: #CC85C4;
+    background: var(--primary);
     color: #FFFFFF;
   }
 }
