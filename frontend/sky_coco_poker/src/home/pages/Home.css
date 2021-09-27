@@ -43,3 +43,27 @@
   color: var(--primary);
   background: var(--background);
 }
+
+
+@media screen and (max-width: 768px){
+
+  .banner img{
+    height: 40vh;
+    object-fit: cover;
+  }
+
+  .code-input input{
+    width: 90vw;
+  }
+
+  .code-input__buttons button{
+    display: block;
+    width: 90vw;
+    margin-bottom: 15px;
+    margin-left: 5%;
+  }
+
+  .code-input__buttons button.loggedin{
+    width: 90vw;
+  }
+}

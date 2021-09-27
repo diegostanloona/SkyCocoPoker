@@ -13,6 +13,7 @@ import { useAuth } from './shared/hooks/auth-hook';
 import MainGame from './game/pages/MainGame';
 
 const Home = React.lazy(() => import('./home/pages/Home'));
+const User = React.lazy(() => import('./user/pages/User'));
 
 const App = () => {
 
@@ -30,7 +31,7 @@ const App = () => {
                 <MainGame/>
               </Route>
              <Route path="/:userId" exact>
-             //profile
+                <User/>
               </Route>
               <Redirect to="/"/>
             </Switch>
