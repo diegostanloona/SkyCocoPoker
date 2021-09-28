@@ -99,6 +99,86 @@
 }
 
 .players_list{
+  max-width: 768px;
+  margin: 0 auto;
+  padding-top: 30px;
+  padding-bottom: 60px;
+}
 
-  
+.players_list .player_item{
+  display: inline-block;
+  width: 30%;
+  text-align: center;
+  border-radius: 8px;
+  border: 1px solid #B1B1B1;
+  margin: 10px 1.6%;
+}
+
+.players_list .player_item h4{
+  border-bottom: 1px solid #B1B1B1;
+  padding-bottom: 15px;
+}
+
+.players_list .player_item h6.waiting{
+  color: #B1B1B1;
+}
+
+.players_list .player_item h6.ready{
+  color: #62d158;
+}
+
+.players_list .player_item h6.fold{
+  color: var(--danger);
+}
+
+@media screen and (max-width: 768px){
+
+  .modal{
+    overflow: scroll;
+  }
+
+  .modal img{
+    max-height: 80vh;
+    max-width: 30vw;
+    margin: 5vw;
+  }
+
+  .game .community_cards{
+    max-width: 90vw;
+    margin: 0 5vw;
+  }
+
+  .game .community_cards img{
+    display: block;
+    max-width: 50vw;
+    margin: 20vw;
+  }
+
+  .bet-input{
+    max-width: 90vw;
+    margin: 0 5vw;
+  }
+
+  .bet-input input{
+    display: block;
+    width: 100%;
+  }
+
+  .bet-input button{
+    display: block;
+    width: 100%;
+    margin: 7px auto;
+  }
+
+  .players_list{
+    max-width: 90vw;
+    margin: 0 5vw;
+  }
+
+  .players_list .player_item{
+    width: 100%;
+    display: block;
+  }
+
+
 }

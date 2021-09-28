@@ -14,6 +14,7 @@ import MainGame from './game/pages/MainGame';
 
 const Home = React.lazy(() => import('./home/pages/Home'));
 const User = React.lazy(() => import('./user/pages/User'));
+const Auth = React.lazy(() => import('./home/pages/Auth'));
 
 const App = () => {
 
@@ -21,7 +22,7 @@ const App = () => {
 
     let routes;
 
-    if (true) {
+    if (false) {
         routes = (
             <Switch>
               <Route path="/" exact>
@@ -40,8 +41,10 @@ const App = () => {
         routes = (
             <Switch>
               <Route path="/" exact>
+                <Home/>
               </Route>
               <Route path="/auth">
+                <Auth/>
               </Route>
               <Redirect to="/auth"/>
             </Switch>
@@ -49,7 +52,7 @@ const App = () => {
     }
 
     return (
-        <AuthContext.Provider value={{isLoggedIn: !token, token: token, userId:userId, login: login, logout: logout}}>
+        <AuthContext.Provider value={{isLoggedIn: !!token, token: token, userId:userId, login: login, logout: logout}}>
           <Router>
           <MainNavigation/>
             <main>

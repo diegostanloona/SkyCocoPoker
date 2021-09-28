@@ -33,17 +33,26 @@ const MainGame = () => {
         <div className="player_item">
           <h4>Diego Gómez</h4>
           <h5>Bet: 500</h5>
+          <h6 className="waiting">Waiting...</h6>
+
         </div>
         <div className="player_item">
           <h4>Diego Gómez</h4>
           <h5>Bet: 500</h5>
+          <h6 className="fold">Fold</h6>
+
         </div>
         <div className="player_item">
           <h4>Diego Gómez</h4>
           <h5>Bet: 500</h5>
+          <h6 className="ready">Ready</h6>
+        </div>
+        <div className="player_item">
+          <h4>Diego Gómez</h4>
+          <h5>Bet: 500</h5>
+          <h6 className="ready">Ready</h6>
         </div>
       </div>
-      <br/><br/>
       <Modal show={areCardsShown} onCancel={closeCardsHandler}>
         <div className="cards">
           <img src="images/cards/2_of_diamonds.png" alt=""/>
