@@ -1,9 +1,16 @@
 import React from 'react';
 
+import UserHistoryItem from '../components/UserHistoryItem';
+
 import './user.css';
 
 const User = () => {
   return(
+    /*
+    props.name
+    props.email
+    props.signupDate
+    */
     <div className="user">
       <div className="user_info">
         <h2>USER INFO</h2>
@@ -13,30 +20,10 @@ const User = () => {
       </div>
       <div className="user_history">
         <h2>HISTORY</h2>
-        <div className="user_history__item won">
-          <img src="images/cards/2_of_diamonds.png" alt=""/>
-          <img src="images/cards/2_of_diamonds.png" alt=""/>
-          <img src="images/cards/2_of_diamonds.png" alt=""/>
-          <img src="images/cards/2_of_diamonds.png" alt=""/>
-          <img src="images/cards/2_of_diamonds.png" alt=""/>
-          <h5>2021 - 08 - 23</h5>
-        </div>
-        <div className="user_history__item lost">
-          <img src="images/cards/2_of_diamonds.png" alt=""/>
-          <img src="images/cards/2_of_diamonds.png" alt=""/>
-          <img src="images/cards/2_of_diamonds.png" alt=""/>
-          <img src="images/cards/2_of_diamonds.png" alt=""/>
-          <img src="images/cards/2_of_diamonds.png" alt=""/>
-          <h5>2021 - 08 - 23</h5>
-        </div>
-        <div className="user_history__item lost">
-          <img src="images/cards/2_of_diamonds.png" alt=""/>
-          <img src="images/cards/2_of_diamonds.png" alt=""/>
-          <img src="images/cards/2_of_diamonds.png" alt=""/>
-          <img src="images/cards/2_of_diamonds.png" alt=""/>
-          <img src="images/cards/2_of_diamonds.png" alt=""/>
-          <h5>2021 - 08 - 23</h5>
-        </div>
+        <UserHistoryItem/>
+        <UserHistoryItem/>
+        <UserHistoryItem/>
+        <UserHistoryItem/>
       </div>
     </div>
   )

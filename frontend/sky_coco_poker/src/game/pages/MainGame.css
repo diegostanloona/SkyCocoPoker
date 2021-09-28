@@ -1,0 +1,104 @@
+.modal .cards{
+  text-align: center;
+}
+
+.modal img{
+  max-width: 120px;
+  margin: 15px;
+}
+
+.game .bottom-bar{
+  position: fixed;
+  height: 50px;
+  width: 100vw;
+  bottom: 0;
+  left: 0;
+  border-top: 1px solid #B1B1B1;
+  background: #FFFFFF;
+  text-align: center;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.game .bottom-bar:hover{
+  background: var(--primary);
+  color: #FFFFFF;
+}
+
+.game .bottom-bar h4{
+  color: inherit;
+  margin: 14px;
+}
+
+.game .community_cards{
+  max-width: 768px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.game .community_cards img{
+  max-width: 80px;
+  margin: 5px;
+}
+
+.game .community_cards span{
+  display: block;
+  color: #B3B3B3;
+  font-size: 12px;
+}
+
+.game h2.turn{
+  text-align: center;
+  color: #B1B1B1;
+  padding: 15px;
+}
+
+.bet-input{
+  padding-top: 30px;
+  max-width: 768px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.bet-input input{
+  display: block;
+  height: 45px;
+  width: 375px;
+  text-align: center;
+  margin: 0 auto;
+  font-size: 16px;
+  text-transform: uppercase;
+  border: 1px solid #B1B1B1;
+}
+
+.bet-input button{
+  border: none;
+  background: var(--primary);
+  color: #FFFFFF;
+  padding: 10px;
+  width: 180px;
+  font-size: 14px;
+  margin: 7px;
+  cursor: pointer;
+  border: 1px solid var(--primary);
+}
+
+.bet-input button.danger{
+  background: var(--danger);
+  border: 1px solid var(--danger);
+}
+
+.bet-input button:hover{
+  color: var(--primary);
+  background: var(--background);
+}
+
+.bet-input button.danger:hover{
+  color: var(--danger);
+  background: var(--background);
+}
+
+.players_list{
+
+  
+}

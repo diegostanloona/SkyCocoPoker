@@ -1,24 +1,32 @@
 .modal {
   z-index: 100;
   position: fixed;
-  top: 22vh;
-  left: 10%;
-  width: 80%;
+  bottom: 0px;
+  left: 0px;
+  width: 100vw;
   background: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  border-radius: 8px;
 }
 
 .modal__header {
   width: 100%;
   padding: 1rem 0.5rem;
   background: #FFFFFF;
-  color: #CC85C4;
-  border-bottom: 1px solid #CC85C4;
+  color: var(--primary);
+  border-bottom: 1px solid var(--primary);
+  display: flex;
+  flex-flow: row;
+}
+
+.modal__header span{
+  cursor: pointer;
+  font-size: 24px;
+  margin: auto;
 }
 
 .modal__header h2 {
   margin: 0.5rem;
+  width: 95%;
 }
 
 .modal__content {
@@ -29,15 +37,8 @@
   padding: 1rem 0.5rem;
 }
 
-@media (min-width: 768px) {
-  .modal {
-    left: calc(50% - 20rem);
-    width: 40rem;
-  }
-}
-
 .modal-enter {
-  transform: translateY(-10rem);
+  transform: translateY(5rem);
   opacity: 0;
 }
 
@@ -53,7 +54,7 @@
 }
 
 .modal-exit-active {
-  transform: translateY(-10rem);
+  transform: translateY(5rem);
   opacity: 0;
   transition: all 200ms;
 }
