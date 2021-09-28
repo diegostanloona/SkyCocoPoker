@@ -1,30 +1,3 @@
-// const user = {
-//   name: "",
-//   email: "",
-//   password: "",
-//   signupdate: ""
-// }
-//
-// const player = {
-//   user: "",
-//   game: "",
-//   turn: "",
-//   status: "waiting, ready, fold, loser, winner",
-//   bet: 0,
-//   givenCards: [],
-//   finalCards: []
-// }
-//
-// const game = {
-//   players: [],
-//   round1: [],
-//   round2: "",
-//   round3: "",
-//   date: "",
-//   code: "",
-//   status: ""
-// }
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
