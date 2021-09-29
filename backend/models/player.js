@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 // const player = {
 //   user: "",
 //   game: "",
@@ -64,4 +66,4 @@ const playerSchema = new Schema({
   ]
 });
 
-module.exports = mongoose.model('Player', userSchema);
+module.exports = mongoose.model('Player', playerSchema);

@@ -22,7 +22,7 @@ const App = () => {
 
     let routes;
 
-    if (true) {
+    if (token) {
         routes = (
             <Switch>
               <Route path="/" exact>
@@ -52,7 +52,7 @@ const App = () => {
     }
 
     return (
-        <AuthContext.Provider value={{isLoggedIn: !token, token: token, userId:userId, login: login, logout: logout}}>
+        <AuthContext.Provider value={{isLoggedIn: !!token, token: token, userId:userId, login: login, logout: logout}}>
           <Router>
           <MainNavigation/>
             <main>

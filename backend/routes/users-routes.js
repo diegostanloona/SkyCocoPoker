@@ -5,12 +5,14 @@ const checkAuth = require('../middleware/check-auth');
 
 const router = express.Router();
 
+router.post('/login', usersController.login);
+
+router.post('/signup', usersController.signup);
+
 router.use(checkAuth);
 
 router.get('/:uid', usersController.getUser);
 
-router.post('/login', usersController.login);
 
-router.post('/signup', usersController.signup);
 
 module.exports = router;

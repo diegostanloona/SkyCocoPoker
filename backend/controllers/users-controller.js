@@ -16,6 +16,7 @@ const getUser = async (req, res, next) => {
 };
 
 const signup = async (req, res, next) => {
+  console.log("signup", req.body);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         console.log(errors);
@@ -28,7 +29,7 @@ const signup = async (req, res, next) => {
     try {
         existingUser = await User.findOne({ email: email });
     } catch (e) {
-
+        console.log("Finding");
         const error = new HttpError('Signing up failed.', 500);
         return next(error);
     }
@@ -42,7 +43,7 @@ const signup = async (req, res, next) => {
     try {
         hashedPassword = await bcrypt.hash(password, 12);
     } catch (e) {
-
+        console.log(e);
         const error = new HttpError('Signing up failed.', 500);
         return next(error);
     }
@@ -57,8 +58,7 @@ const signup = async (req, res, next) => {
     try {
         await createdUser.save();
     } catch (e) {
-        console.log(e);
-
+        console.log("Saving")
         const error = new HttpError('Creating user failed.', 500);
         return next(error);
     }
@@ -67,7 +67,7 @@ const signup = async (req, res, next) => {
     try {
         token = jwt.sign({ userId: createdUser.id }, process.env.JWT_KEY, { expiresIn: '1h' });
     } catch (e) {
-
+        console.log("Token")
         const error = new HttpError('Signing up failed.', 500);
         return next(error);
     }
@@ -117,6 +117,6 @@ const login = async (req, res, next) => {
 
 };
 
-exports.getUsers = getUsers;
+exports.getUser = getUser;
 exports.signup = signup;
 exports.login = login;

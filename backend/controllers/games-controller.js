@@ -99,13 +99,13 @@ const joinGame = async (req, res, next) => {
       console.log(errors);
       return next(new HttpError('Error reading the data.', 422));
   }
-  const gameId = req.params.gid;
+  const gameCode = req.params.gid;
 
   const userId = req.userData.userId;
 
   let existingGame;
   try {
-      existingGame = await Game.findById(gameId);
+      existingGame = await Game.findOne({code: gameCode});
   } catch (e) {
       console.log("Could not find Game, error: " + e);
       const error = new HttpError('Error while finding the game.', 500);
@@ -114,6 +114,11 @@ const joinGame = async (req, res, next) => {
 
   if(!existingGame){
     const error = new HttpError('Error while finding the game.', 500);
+    return next(error);
+  }
+
+  if(existingGame.status !== 'created'){
+    const error = new HttpError('Game already started or finished.', 500);
     return next(error);
   }
 
@@ -197,8 +202,6 @@ const bet = async (req, res, next) => {
       return next(error);
   }
 
-  existingPlayer.bet += bet;
-
   try {
       await existingPlayer.save();
   } catch (e) {
@@ -207,9 +210,52 @@ const bet = async (req, res, next) => {
       return next(error);
   }
 
-  //Al guardar se aumenta game.turn en 1 y si llega al máximo se aumenta game.round, si es el más alto se bloquean las apuestas
+  let existingGame;
+  try {
+    existingGame = await Game.findById(existingPlayer.game).populate('players').lean();
+  } catch (e) {
+    console.log("Could not find Game, error: " + e);
+    const error = new HttpError('Error while finding Game.', 500);
+    return next(error);
+  }
 
-  res.json({ player: existingPlayer });
+  if(existingGame.round !== 2){
+    existingPlayer.bet += bet;
+  }else{
+    const error = new HttpError('Can not bet in this round.', 500);
+    return next(error);
+  }
+
+  if(existingGame.round === 0 && existingGame.turn === 0){
+    game.status = 'started';
+  }
+
+  if(existingGame.turn !== existingPlayer.turn){
+    const error = new HttpError('You must wait to the other players.', 500);
+    return next(error);
+  }
+
+  if(existingGame.turn === existingGame.players.length){
+      existingGame.round++;
+      existingGame.players.forEach(item => {
+        game.totalBets+=bet;
+      })
+  }else{
+    existingGame.turn++;
+  }
+  //Al guardar se aumenta game.turn en 1 y si llega al máximo se aumenta game.round
+  //y se suman las apuestas totales, si es el más alto se bloquean las apuestas
+
+  try {
+    //Guardar
+  } catch (e) {
+    console.log("Error saving" + e);
+    const error = new HttpError('Error while saving bet.', 500);
+    return next(error);
+  }
+
+
+  res.json({ player: existingPlayer, turn: existingGame.turn, round: existingGame.round });
 }
 
 const fold = async (req, res, next) => {
@@ -277,8 +323,8 @@ const selectCards = async (req, res, next) => {
 }
 
 const chooseWinner = async (req, res, next) => {
-
-  res.json({ winner: player });
+  //iterar cada player y comparar
+  res.json({ winner: "Diego" });
 }
 
 exports.getGame = getGame;

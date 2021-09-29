@@ -1,3 +1,6 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
 const gameSchema = new Schema({
 	players: [
     {
@@ -84,7 +87,11 @@ const gameSchema = new Schema({
 	round: {
 		type: Number,
 		required: true
+	},
+	totalBets: {
+		type: Number,
+		required: true
 	}
 });
 
-module.exports = mongoose.model('Game', userSchema);
+module.exports = mongoose.model('Game', gameSchema);

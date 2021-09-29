@@ -20,6 +20,8 @@ const Auth = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
+  console.log(process.env.REACT_APP_BACKEND_URL);
+
   const [formState, inputHandler, setFormData] = useForm(
     {
       email: {
@@ -65,7 +67,7 @@ const Auth = () => {
     if (isLoginMode) {
       try {
         const responseData = await sendRequest(
-          `${process.env.REACT_APP_BACKEND_URL}api/users/login`,
+          `${process.env.REACT_APP_BACKEND_URL}/api/users/login`,
           'POST',
           JSON.stringify({
             email: formState.inputs.email.value,
@@ -79,15 +81,17 @@ const Auth = () => {
       } catch (err) {}
     } else {
       try {
-        const formData = new FormData();
-        formData.append('email', formState.inputs.email.value);
-        formData.append('name', formState.inputs.name.value);
-        formData.append('password', formState.inputs.password.value);
-
         const responseData = await sendRequest(
-          `${process.env.REACT_APP_BACKEND_URL}api/users/signup`,
+          `${process.env.REACT_APP_BACKEND_URL}/testPost`,
           'POST',
-          formData
+          JSON.stringify({
+            name: formState.inputs.name.value,
+            email: formState.inputs.email.value,
+            password: formState.inputs.password.value
+          }),
+          {
+            'Content-Type': 'application/json'
+          }
         );
 
         auth.login(responseData.userId, responseData.token);
