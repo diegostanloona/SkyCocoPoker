@@ -9,8 +9,6 @@ router.post('/login', usersController.login);
 
 router.post('/signup', usersController.signup);
 
-router.use(checkAuth);
-
 router.get('/:uid', usersController.getUser);
 
 

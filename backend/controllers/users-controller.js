@@ -8,7 +8,7 @@ const User = require('../models/user');
 
 const getUser = async (req, res, next) => {
 
-    const userId = req.userData.userId;
+    const userId = req.params.uid;
 
     const user = await User.findById(userId, '-password');
 
@@ -68,6 +68,7 @@ const signup = async (req, res, next) => {
         token = jwt.sign({ userId: createdUser.id }, process.env.JWT_KEY, { expiresIn: '1h' });
     } catch (e) {
         console.log("Token")
+        console.log(e);
         const error = new HttpError('Signing up failed.', 500);
         return next(error);
     }

@@ -15,10 +15,9 @@ const playerSchema = new Schema({
 		required: true,
     ref: 'User'
 	},
-	game: {
-    type: mongoose.Types.ObjectId,
-		required: true,
-    ref: 'Game'
+	name: {
+		type: String,
+		required: true
 	},
 	turn: {
 		type: Number,
@@ -43,7 +42,7 @@ const playerSchema = new Schema({
 				required: true
 			},
 			value: {
-				type: Number,
+				type: String,
 				required: true
 			}
     }
@@ -59,7 +58,7 @@ const playerSchema = new Schema({
 				required: true
 			},
 			value: {
-				type: Number,
+				type: String,
 				required: true
 			}
     }

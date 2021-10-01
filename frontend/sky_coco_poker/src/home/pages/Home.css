@@ -18,11 +18,10 @@
   width: 375px;
   text-align: center;
   font-size: 16px;
-  text-transform: uppercase;
   border: 1px solid #B1B1B1;
 }
 
-.code-input__buttons button{
+.code-input__buttons button, .code-input__buttons a{
   border: none;
   background: var(--primary);
   color: #FFFFFF;
@@ -32,14 +31,15 @@
   margin: 0 7px;
   cursor: pointer;
   border: 1px solid var(--primary);
+  text-decoration: none;
 }
 
-.code-input__buttons button.loggedin{
+.code-input__buttons a{
   width: 370px;
   margin: 0;
 }
 
-.code-input__buttons button:hover{
+.code-input__buttons button:hover, .code-input__buttons a:hover{
   color: var(--primary);
   background: var(--background);
 }
@@ -56,14 +56,10 @@
     width: 90vw;
   }
 
-  .code-input__buttons button{
+  .code-input__buttons button, .code-input__buttons a{
     display: block;
     width: 90vw;
     margin-bottom: 15px;
     margin-left: 5%;
-  }
-
-  .code-input__buttons button.loggedin{
-    width: 90vw;
   }
 }

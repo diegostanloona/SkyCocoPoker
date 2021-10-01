@@ -10,11 +10,10 @@ import MainNavigation from './shared/components/Navigation/MainNavigation';
 import { AuthContext } from './shared/context/auth-context';
 import { useAuth } from './shared/hooks/auth-hook';
 
-import MainGame from './game/pages/MainGame';
-
 const Home = React.lazy(() => import('./home/pages/Home'));
-const User = React.lazy(() => import('./user/pages/User'));
+const UserContainer = React.lazy(() => import('./user/components/UserContainer'));
 const Auth = React.lazy(() => import('./home/pages/Auth'));
+const MainGameContainer = React.lazy(() => import('./game/components/MainGameContainer'));
 
 const App = () => {
 
@@ -28,11 +27,11 @@ const App = () => {
               <Route path="/" exact>
                 <Home/>
               </Route>
-              <Route path="/game" exact>
-                <MainGame/>
+              <Route path="/game/" exact>
+                <MainGameContainer/>
               </Route>
-             <Route path="/:userId" exact>
-                <User/>
+              <Route path="/user/:userId" exact>
+                <UserContainer/>
               </Route>
               <Redirect to="/"/>
             </Switch>

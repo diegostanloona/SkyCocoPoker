@@ -7,11 +7,11 @@ const router = express.Router();
 
 router.use(checkAuth);
 
-router.get('/:gid', gamesController.getGame);
+router.post('/getGame', gamesController.getGame);
 
 router.post('/createGame', gamesController.createGame);
 
-router.post('/joinGame/:gid', gamesController.joinGame);
+router.post('/joinGame', gamesController.joinGame);
 
 router.post('/updateGameStatus/:gid', gamesController.updateGameStatus);
 

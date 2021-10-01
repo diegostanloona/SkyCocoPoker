@@ -98,6 +98,10 @@
   background: var(--background);
 }
 
+.gameInfo{
+  text-align: center;
+}
+
 .players_list{
   max-width: 768px;
   margin: 0 auto;
@@ -112,6 +116,10 @@
   border-radius: 8px;
   border: 1px solid #B1B1B1;
   margin: 10px 1.6%;
+}
+
+.players_list .player_item.you{
+  border-color: #62d158;
 }
 
 .players_list .player_item h4{

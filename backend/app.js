@@ -12,18 +12,13 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000/');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
     res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PATCH, DELETE');
     next();
 });
 
 app.get('/', (req, res, next) => {
-    res.json({message: "Test message"});
-});
-
-app.post('/testPost', (req, res, next) => {
-    console.log(req);
     res.json({message: "Test message"});
 });
 
@@ -44,9 +39,9 @@ mongoose
     .then(() => {
         const server = app.listen(process.env.PORT || 5000);
         console.log("Listening on port " + (process.env.PORT || 5000));
-        // const io = require('./util/socket').init(server);
-        // io.on('connection', socket => {
-      //  });
+        const io = require('./util/socket').init(server);
+        io.on('connection', socket => {
+       });
     })
     .catch(err => {
         console.log("ERROR!!!");
