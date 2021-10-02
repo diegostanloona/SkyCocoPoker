@@ -139,6 +139,10 @@
   color: var(--danger);
 }
 
+.card_selected{
+  border: 2px solid #62d158;
+}
+
 @media screen and (max-width: 768px){
 
   .modal{

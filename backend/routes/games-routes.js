@@ -15,8 +15,6 @@ router.post('/joinGame', gamesController.joinGame);
 
 router.post('/updateGameStatus/:gid', gamesController.updateGameStatus);
 
-router.post('/chooseWinner/:gid', gamesController.chooseWinner);
-
 //Players
 
 router.post('/bet/:pid', gamesController.bet);

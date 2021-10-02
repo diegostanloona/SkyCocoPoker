@@ -65,7 +65,7 @@ const MainGameContainer = () => {
       error && <ErrorModal error={error} onClear={clearError} />
     }
     {
-      !gameData && isLoading && <LoadingSpinner asOverlay />
+      isLoading && <LoadingSpinner asOverlay />
     }
     {
       !isLoading && gameData && <MainGame gameData={gameData} refreshHandler={refreshHandler}/>

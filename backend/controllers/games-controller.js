@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const short = require('short-uuid');
+const PokerEvaluator = require('poker-evaluator');
+
 const { cards } = require('../cards');
 const HttpError = require('../models/http-error');
 
@@ -128,6 +130,11 @@ const getGame = async (req, res, next) => {
         existingGame.turn = 0;
     }else{
       existingGame.turn++;
+    }
+    try {
+      io.getIO().emit('gameUpdate'+existingGame._id, {});
+    } catch (e) {
+      console.log(e);
     }
   }
 
@@ -413,6 +420,7 @@ const fold = async (req, res, next) => {
     }
   }else{
     existingPlayer.status = 'fold';
+    existingPlayer.finalCards = [{ index: 5, suit: 'diamonds', value: '2' }, { index: 5, suit: 'diamonds', value: '2' }, { index: 5, suit: 'diamonds', value: '2' }, { index: 5, suit: 'diamonds', value: '2' }, { index: 5, suit: 'diamonds', value: '2' }];
 
     try {
       const sess = await mongoose.startSession();
@@ -452,7 +460,18 @@ const selectCards = async (req, res, next) => {
       return next(error);
   }
 
+  if(existingPlayer.status !== 'playing'){
+    const error = new HttpError('You are not able to select cards multiple times.', 500);
+    return next(error);
+  }
+
+  if(cards.length + existingPlayer.givenCards.length !== 5){
+    const error = new HttpError('You must select 5 cards in total.', 500);
+    return next(error);
+  }
+
   existingPlayer.finalCards = [...existingPlayer.givenCards, ...cards];
+  existingPlayer.status = 'cardsSelected';
 
   try {
       await existingPlayer.save();
@@ -462,19 +481,81 @@ const selectCards = async (req, res, next) => {
       return next(error);
   }
 
+  let existingGame;
+
+  try {
+    existingGame = await Game.findOne({ 'games.players.user': existingPlayer.user }).populate('players');
+  } catch (e) {
+    console.log("Could not find Game, error: " + e);
+    const error = new HttpError('Error while finding Game.', 500);
+    return next(error);
+  }
+
+  let didEveryoneSelect = true;
+
+  for(player of existingGame.players){
+    if(player.finalCards.length !== 5){
+      didEveryoneSelect = false;
+      break;
+    }
+  }
+
+  if(didEveryoneSelect){
+    chooseWinnerHandler(existingGame, next);
+  }
+
   res.json({ player: existingPlayer });
 }
 
-const chooseWinner = async (req, res, next) => {
-  //iterar cada player y comparar
-  res.json({ winner: "Diego" });
+const cardsFormatter = cards => {
+  let newCards = [];
+
+  cards.forEach(card => {
+    const suit = card.suit[0];
+    let value;
+
+    if(card.value.length !== 2){
+      value = card.value[0].toUpperCase();
+    }else{
+      value = 'T'
+    }
+
+    const newCard = value+suit;
+
+    newCards.push(newCard);
+
+  });
+
+  return newCards;
+}
+
+const chooseWinnerHandler = async (existingGame, next) => {
+
+  let winner;
+
+  const players = [];
+
+  existingGame.players.forEach(player => {
+    players.push({
+      name: player.name,
+      cards: player.finalCards,
+      calculatedScore: PokerEvaluator.evalHand(cardsFormatter(player.finalCards))
+    });
+  });
+
+  console.log(players);
+
+  const maxScore = Math.max.apply(Math, players.map(player => player.calculatedScore.value));
+
+  winner = players.find(player => player.calculatedScore.value === maxScore);
+
+  io.getIO().emit('gameWinner'+existingGame._id, {player: winner});
 }
 
 exports.getGame = getGame;
 exports.createGame = createGame;
 exports.joinGame = joinGame;
 exports.updateGameStatus = updateGameStatus;
-exports.chooseWinner = chooseWinner;
 exports.bet = bet;
 exports.fold = fold;
 exports.selectCards = selectCards;
