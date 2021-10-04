@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import Modal from '../../shared/components/UIElements/Modal';
 import CreateRoom from '../components/CreateRoom';
@@ -15,6 +16,8 @@ const Home = () => {
   const auth = useContext(AuthContext);
   const [isCreateRoomShown, setIsCreateRoomShown] = useState(false);
   const [gameCode, setGameCode] = useState("");
+
+  const history = useHistory();
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
@@ -35,6 +38,7 @@ const Home = () => {
           'Authorization': 'Bearer '+auth.token
         }
       );
+      history.push("/game");
     }catch(e){
       console.log(e);
     }

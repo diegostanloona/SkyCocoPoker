@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
@@ -11,6 +12,8 @@ import './CreateRoom.css';
 const CreateRoom = () => {
 
   const auth = useContext(AuthContext);
+
+  const history = useHistory();
 
   const [cardsNumber, setCardsNumber] = useState(2);
 
@@ -37,7 +40,7 @@ const CreateRoom = () => {
           'Authorization': 'Bearer '+auth.token
         }
       );
-      alert("Game created");
+      history.push("/game");
     }catch(e){
       console.log(e);
     }

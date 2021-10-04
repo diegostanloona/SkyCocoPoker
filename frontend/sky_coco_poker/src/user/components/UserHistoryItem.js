@@ -1,19 +1,13 @@
 import React from 'react';
 
 const UserHistoryItem = props => {
+  console.log(props);
+
   return(
-    /*
-    props.didwin
-    props.cards["2_of_diamonds"]
-    props.date
-    */
-    <div className="user_history__item won">
-      <img src="images/cards/2_of_diamonds.png" alt=""/>
-      <img src="images/cards/2_of_diamonds.png" alt=""/>
-      <img src="images/cards/2_of_diamonds.png" alt=""/>
-      <img src="images/cards/2_of_diamonds.png" alt=""/>
-      <img src="images/cards/2_of_diamonds.png" alt=""/>
-      <h5>2021 - 08 - 23</h5>
+    <div className={`user_history__item ${props.item.didWin? 'won': 'lost'}`}>
+      {props.item.cards.map(card =>
+        <img src={`/images/cards/${card.value}_of_${card.suit}.png`} alt=""/>
+      )}
     </div>
   );
 };

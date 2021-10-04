@@ -15,13 +15,12 @@ router.post('/joinGame', gamesController.joinGame);
 
 router.post('/updateGameStatus/:gid', gamesController.updateGameStatus);
 
-//Players
-
 router.post('/bet/:pid', gamesController.bet);
 
 router.post('/fold/:pid', gamesController.fold);
 
 router.post('/selectCards/:pid', gamesController.selectCards);
 
+router.post('/chooseWinner/:gid', gamesController.chooseWinner);
 
 module.exports = router;

@@ -11,6 +11,6 @@ router.post('/signup', usersController.signup);
 
 router.get('/:uid', usersController.getUser);
 
-
+router.get('/history/:uid', usersController.getPlayerHistory);
 
 module.exports = router;

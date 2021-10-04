@@ -30,7 +30,7 @@ const App = () => {
               <Route path="/game/" exact>
                 <MainGameContainer/>
               </Route>
-              <Route path="/user/:userId" exact>
+              <Route path="/user/" exact>
                 <UserContainer/>
               </Route>
               <Redirect to="/"/>

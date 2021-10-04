@@ -5,6 +5,7 @@ import UserHistoryItem from '../components/UserHistoryItem';
 import './user.css';
 
 const User = props => {
+  console.log(props);
   return(
     /*
     props.name
@@ -20,10 +21,12 @@ const User = props => {
       </div>
       <div className="user_history">
         <h2>HISTORY</h2>
-        <UserHistoryItem/>
-        <UserHistoryItem/>
-        <UserHistoryItem/>
-        <UserHistoryItem/>
+        {
+          props.history.map(item => {
+            console.log(item);
+            return <UserHistoryItem item={item}/>
+          })
+        }
       </div>
     </div>
   )

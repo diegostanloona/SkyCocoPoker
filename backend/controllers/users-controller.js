@@ -5,6 +5,8 @@ const { v4: uuidv4 } = require('uuid');
 
 const HttpError = require('../models/http-error');
 const User = require('../models/user');
+const Player = require('../models/player');
+const Game = require('../models/game');
 
 const getUser = async (req, res, next) => {
 
@@ -14,6 +16,33 @@ const getUser = async (req, res, next) => {
 
     res.json({user: user});
 };
+
+const getPlayerHistory = async (req, res, next) => {
+
+    const userId = req.params.uid;
+
+    let existingPlayer = [];
+
+    try{
+      existingPlayer = await Player.find({user: userId});
+    }catch(e){
+      const error = new HttpError('Error finding player', 500);
+      return next(error);
+    }
+
+
+
+    const history = existingPlayer.map(player => {
+      const item = {
+        didWin: player.status === 'winner',
+        cards: player.finalCards
+      };
+      console.log(item);
+      return item;
+    });
+
+    res.json({history: history.reverse()});
+}
 
 const signup = async (req, res, next) => {
   console.log("signup", req.body);
@@ -119,5 +148,6 @@ const login = async (req, res, next) => {
 };
 
 exports.getUser = getUser;
+exports.getPlayerHistory = getPlayerHistory;
 exports.signup = signup;
 exports.login = login;

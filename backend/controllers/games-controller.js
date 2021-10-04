@@ -47,8 +47,18 @@ const createGame = async (req, res, next) => {
       }
     }
 
+    let existingUser;
+
+    try {
+      existingUser = await User.findById(userId);
+    } catch (e) {
+      const error = new HttpError('Error finding user.', 500);
+      return next(error);
+    }
+
     const createdPlayer = new Player({
       user: userId,
+      name: existingUser.name,
       turn: 0,
       status: 'playing',
       bet: 0,
@@ -98,14 +108,7 @@ const getGame = async (req, res, next) => {
   let existingPlayer;
 
   try {
-      existingPlayer = await Player.findOne({ user: userId });
-  } catch (e) {
-      const error = new HttpError('Error while finding the game.', 500);
-      return next(error);
-  }
-
-  try {
-      existingGame = await Game.findOne({ 'games.players._id': existingPlayer._id }).populate('players');
+      existingGame = await Game.findOne({ 'games.players.user': userId, status: {$ne: 'finished'} }).populate('players');
   } catch (e) {
       console.log("Could not find Game, error: " + e);
       const error = new HttpError('Error while finding the game.', 500);
@@ -118,8 +121,19 @@ const getGame = async (req, res, next) => {
     return next(error);
   }
 
+  const playerId = existingGame.players.filter(player => String(player.user) === String(userId))[0]._id;
+
+  console.log(playerId);
+
+  try {
+      existingPlayer = await Player.findOne({_id: playerId});
+  } catch (e) {
+    console.log("player.find");
+      const error = new HttpError('Error while finding the game.', 500);
+      return next(error);
+  }
+
   if(existingGame.status === 'finished'){
-    console.log("game not created");
     const error = new HttpError('Game already finished.', 500);
     return next(error);
   }
@@ -133,6 +147,8 @@ const getGame = async (req, res, next) => {
     }
     try {
       io.getIO().emit('gameUpdate'+existingGame._id, {});
+
+
     } catch (e) {
       console.log(e);
     }
@@ -242,6 +258,8 @@ const joinGame = async (req, res, next) => {
 
   io.getIO().emit('gameUpdate'+existingGame._id, {});
 
+
+
   res.json({ game: existingGame });
 }
 
@@ -259,7 +277,7 @@ const updateGameStatus = async (req, res, next) => {
   try {
       existingGame = await Game.findById(gameId);
   } catch (e) {
-      console.log("Could not find Game, error: " + e);
+      console.log("Update - Could not find Game, error: " + e);
       const error = new HttpError('Error while finding the game.', 500);
       return next(error);
   }
@@ -290,7 +308,7 @@ const bet = async (req, res, next) => {
 
   let existingPlayer;
   try {
-      existingPlayer = await Player.findById(playerId);
+    existingPlayer = await Player.findOne({ user: userId, status: 'playing' });
   } catch (e) {
       console.log("Could not find Player, error: " + e);
       const error = new HttpError('Error while finding Player.', 500);
@@ -304,7 +322,7 @@ const bet = async (req, res, next) => {
 
   let existingGame;
   try {
-    existingGame = await Game.findOne({ 'games.players.user': userId }).populate('players');
+    existingGame = await Game.findOne({ 'games.players.user': userId, status: {$ne: 'finished'} }).populate('players');
   } catch (e) {
     console.log("Could not find Game, error: " + e);
     const error = new HttpError('Error while finding Game.', 500);
@@ -312,11 +330,11 @@ const bet = async (req, res, next) => {
   }
 
   if(existingGame.turn !== existingPlayer.turn){
-    const error = new HttpError('You must wait to the other players.', 500);
+    const error = new HttpError('you must wait for the other players.', 500);
     return next(error);
   }
 
-  if(existingGame.round !== 30){
+  if(existingGame.round !== 3){
     existingPlayer.bet += bet;
     existingGame.totalBets+=bet;
   }else{
@@ -348,6 +366,8 @@ const bet = async (req, res, next) => {
   }
 
   io.getIO().emit('gameUpdate'+existingGame._id, {});
+
+
   //console.log('gameUpdate'+existingGame._id);
 
   res.json({ player: existingPlayer, turn: existingGame.turn, round: existingGame.round });
@@ -371,8 +391,6 @@ const fold = async (req, res, next) => {
       return next(error);
   }
 
-  console.log(existingPlayer);
-
   if(existingPlayer.status !== 'playing' && existingPlayer.status !== 'fold'){
     const error = new HttpError('You are not able to fold in this game.', 500);
     return next(error);
@@ -381,19 +399,35 @@ const fold = async (req, res, next) => {
   let existingGame;
 
   try {
-    existingGame = await Game.findOne({ 'games.players.user': existingPlayer.user }).populate('players');
+    existingGame = await Game.findOne({ 'games.players.user': existingPlayer.user, status: {$ne: 'finished'} }).populate('players');
   } catch (e) {
     console.log("Could not find Game, error: " + e);
     const error = new HttpError('Error while finding Game.', 500);
     return next(error);
   }
 
-  if(existingGame.turn !== existingPlayer.turn){
-    const error = new HttpError('You must wait to the other players.', 500);
+  const players = [...existingGame.players.filter(player => String(player._id) !== String(playerId))];
+
+  let isEveryoneFold = true;
+
+  players.forEach(player => {
+    if(player.status !== 'fold'){
+      isEveryoneFold = false;
+    }
+  });
+
+  if(isEveryoneFold){
+    const error = new HttpError('You are not able to fold because you are the last player standing.', 500);
     return next(error);
   }
 
-  if(existingGame.round === 30){
+
+  if(existingGame.turn !== existingPlayer.turn){
+    const error = new HttpError('you must wait for the other players.', 500);
+    return next(error);
+  }
+
+  if(existingGame.round === 3){
     const error = new HttpError('Can not fold in this round.', 500);
     return next(error);
   }
@@ -420,7 +454,7 @@ const fold = async (req, res, next) => {
     }
   }else{
     existingPlayer.status = 'fold';
-    existingPlayer.finalCards = [{ index: 5, suit: 'diamonds', value: '2' }, { index: 5, suit: 'diamonds', value: '2' }, { index: 5, suit: 'diamonds', value: '2' }, { index: 5, suit: 'diamonds', value: '2' }, { index: 5, suit: 'diamonds', value: '2' }];
+    existingPlayer.finalCards = [{ index: 5, suit: 'diamonds', value: '2' }, { index: 14, suit: 'hearts', value: '4' }, { index: 8, suit: 'clubs', value: '3' }, { index: 19, suit: 'spades', value: '5' }, { index: 21, suit: 'diamonds', value: '6' }];
 
     try {
       const sess = await mongoose.startSession();
@@ -436,6 +470,8 @@ const fold = async (req, res, next) => {
   }
 
   io.getIO().emit('gameUpdate'+existingGame._id, {});
+
+
 
   res.json({ player: existingPlayer });
 }
@@ -480,31 +516,67 @@ const selectCards = async (req, res, next) => {
       const error = new HttpError('Error while updating Player.', 500);
       return next(error);
   }
+    res.json({});
+}
+
+const chooseWinner = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+      console.log(errors);
+      return next(new HttpError('Error reading the data.', 422));
+  }
+
+  const gameId = req.params.gid;
 
   let existingGame;
 
   try {
-    existingGame = await Game.findOne({ 'games.players.user': existingPlayer.user }).populate('players');
+    existingGame = await Game.findById(gameId).populate('players');
   } catch (e) {
-    console.log("Could not find Game, error: " + e);
+    console.log("Choose - Could not find Game, error: " + e);
     const error = new HttpError('Error while finding Game.', 500);
     return next(error);
   }
 
-  let didEveryoneSelect = true;
-
-  for(player of existingGame.players){
+  existingGame.players.forEach(player => {
     if(player.finalCards.length !== 5){
-      didEveryoneSelect = false;
-      break;
+      const error = new HttpError('All players have to select their cards before checking for a winner.', 500);
+      return next(error);
     }
+  });
+
+  let existingPlayer;
+
+  const winner = await chooseWinnerHandler(existingGame);
+  try {
+    existingPlayer = await Player.findById(winner.id);
+  } catch (e) {
+    console.log("Winner - Could not find Game, error: " + e);
+    const error = new HttpError('Error while finding Game.', 500);
+    return next(error);
   }
 
-  if(didEveryoneSelect){
-    chooseWinnerHandler(existingGame, next);
+
+  existingPlayer.status = 'winner';
+  existingGame.status = 'finished';
+
+  try {
+      await existingPlayer.save();
+      await existingGame.save();
+  } catch (e) {
+      console.log(e);
+      const error = new HttpError('Error while updating Player.', 500);
+      return next(error);
+  }
+  try {
+    io.getIO().emit('gameFinished'+existingGame._id, {winner: existingPlayer});
+
+  } catch (e) {
+    console.log(e);
   }
 
   res.json({ player: existingPlayer });
+
 }
 
 const cardsFormatter = cards => {
@@ -529,7 +601,7 @@ const cardsFormatter = cards => {
   return newCards;
 }
 
-const chooseWinnerHandler = async (existingGame, next) => {
+const chooseWinnerHandler = async (existingGame) => {
 
   let winner;
 
@@ -537,19 +609,17 @@ const chooseWinnerHandler = async (existingGame, next) => {
 
   existingGame.players.forEach(player => {
     players.push({
-      name: player.name,
-      cards: player.finalCards,
-      calculatedScore: PokerEvaluator.evalHand(cardsFormatter(player.finalCards))
+      id: player._id,
+      calculatedScore: player.status==='fold'? {value: -99999} : PokerEvaluator.evalHand(cardsFormatter(player.finalCards))
     });
   });
-
-  console.log(players);
 
   const maxScore = Math.max.apply(Math, players.map(player => player.calculatedScore.value));
 
   winner = players.find(player => player.calculatedScore.value === maxScore);
 
-  io.getIO().emit('gameWinner'+existingGame._id, {player: winner});
+  return winner;
+
 }
 
 exports.getGame = getGame;
@@ -559,3 +629,4 @@ exports.updateGameStatus = updateGameStatus;
 exports.bet = bet;
 exports.fold = fold;
 exports.selectCards = selectCards;
+exports.chooseWinner = chooseWinner;

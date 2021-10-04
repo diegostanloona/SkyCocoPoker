@@ -6,6 +6,8 @@ import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 import { useHttpClient } from '../../shared/hooks/http-hook';
 import { AuthContext } from '../../shared/context/auth-context';
 
+import openSocket from "socket.io-client";
+
 import MainGame from '../pages/MainGame';
 
 const MainGameContainer = () => {
@@ -13,6 +15,24 @@ const MainGameContainer = () => {
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [gameData, setGameData] = useState();
+
+  const refreshHandler = async () => {
+    try{
+      const responseData = await sendRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/api/games/getGame`,
+        'POST',
+        JSON.stringify({
+        }),
+        {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer '+auth.token
+        }
+      );
+      setGameData(responseData);
+    }catch(e){
+      console.log(e);
+    }
+  }
 
   useEffect(() => {
     const checkGame = async () => {
@@ -27,37 +47,18 @@ const MainGameContainer = () => {
             'Authorization': 'Bearer '+auth.token
           }
         );
-        // setExistingGame(responseData.existingGame);
-        // setExistingPlayer(responseData.existingPlayer);
-        // setOtherPlayers(responseData.otherPlayers);
         setGameData(responseData);
       }catch(e){
         console.log(e);
       }
     };
     checkGame();
+
   }, []);
 
-  const refreshHandler = async () => {
-    try{
-      const responseData = await sendRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/api/games/getGame`,
-        'POST',
-        JSON.stringify({
-        }),
-        {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer '+auth.token
-        }
-      );
-      // setExistingGame(responseData.existingGame);
-      // setExistingPlayer(responseData.existingPlayer);
-      // setOtherPlayers(responseData.otherPlayers);
-      setGameData(responseData);
-    }catch(e){
-      console.log(e);
-    }
-  }
+
+
+
 
   return(
     <>
@@ -71,7 +72,7 @@ const MainGameContainer = () => {
       !isLoading && gameData && <MainGame gameData={gameData} refreshHandler={refreshHandler}/>
     }
     {
-      !gameData && <h2>You are not in a game.</h2>
+      !gameData && <h2 align='center'>You are not in a game.</h2>
     }
     </>
   )

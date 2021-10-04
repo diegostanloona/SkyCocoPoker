@@ -14,14 +14,21 @@ const UserContainer = () => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   const [existingUser, setExistingUser] = useState();
+  const [history, setHistory] = useState([]);
 
   useEffect(() => {
     const fetchUser = async () => {
         const responseData = await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/api/users/${auth.userId}`);
-        console.log(responseData);
         setExistingUser(responseData.user);
     };
+
+    const fetchHistory = async () => {
+      const responseData = await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/api/users/history/${auth.userId}`);
+      console.log(responseData);
+      setHistory(responseData.history);
+    }
     fetchUser();
+    fetchHistory();
   }, []);
 
   return(
@@ -33,7 +40,7 @@ const UserContainer = () => {
       !existingUser && isLoading && <LoadingSpinner asOverlay />
     }
     {
-      existingUser && <User user={existingUser}/>
+      existingUser && <User user={existingUser} history={history}/>
     }
     </>
   )
